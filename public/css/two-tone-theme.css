@@ -1,0 +1,554 @@
+/* ============================================================
+   Two-Tone Theme Override CSS
+   Primary Accent: #e6212a
+   Dominant Color: #f7f7f7
+   ============================================================ */
+
+/* ---------------------------------------------
+   CSS Variables (Root)
+   --------------------------------------------- */
+:root {
+  /* Light Mode Colors */
+  --bg: #f7f7f7;                /* Dominant background */
+  --surface: #ffffff;            /* Cards/surfaces */
+  --accent: #e6212a;             /* Primary accent */
+  --text: #111111;               /* Main text */
+  --muted: #6b6b6b;              /* Secondary text */
+  --border: rgba(0, 0, 0, 0.06); /* Subtle borders */
+  
+  /* Accent variants for hover states */
+  --accent-hover: #c11d24;       /* Darker shade for hover */
+  --accent-light: #f8d7da;       /* Light tint for backgrounds */
+  
+  /* Dark Mode Colors (Optional) */
+  --bg-dark: #1a1a1a;
+  --surface-dark: #2d2d2d;
+  --text-dark: #e0e0e0;
+  --accent: #e6212a;             /* Same accent color */
+}
+
+/* ---------------------------------------------
+   Global Base Styles
+   --------------------------------------------- */
+
+/* Body background uses --bg */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+/* Auth pages body - override for centered layout */
+body.auth-body {
+  min-height: 100vh;
+  background-color: #f7f7f7;
+}
+
+/* Transitions for smooth color changes */
+* {
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+/* Text color adjustments */
+p, h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+}
+
+p {
+  color: var(--muted);
+}
+
+/* ---------------------------------------------
+   Selection Colors
+   --------------------------------------------- */
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+::-moz-selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ---------------------------------------------
+   Header/Navbar Styles
+   --------------------------------------------- */
+
+/* Default header background transparent/light surface */
+.header-area {
+  background-color: transparent;
+}
+
+/* Sticky header with surface background */
+.background-header {
+  background-color: var(--surface) !important;
+  box-shadow: 0 2px 10px var(--border) !important;
+}
+
+/* Nav links - normal state */
+.header-area .main-nav .nav li a {
+  color: var(--text);
+}
+
+/* Active nav link - uses accent */
+.header-area .main-nav .nav li a.active,
+.background-header .main-nav .nav li a.active {
+  color: var(--accent);
+  background-color: rgba(230, 33, 42, 0.1);
+}
+
+/* Hover state with accent */
+.header-area .main-nav .nav li:hover a,
+.background-header .main-nav .nav li:hover a {
+  color: var(--accent);
+}
+
+/* Search input styling */
+.header-area .main-nav #search input {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.header-area .main-nav #search input::placeholder {
+  color: var(--muted);
+}
+
+.header-area .main-nav #search i {
+  color: var(--muted);
+}
+
+/* ---------------------------------------------
+   Buttons & CTAs
+   --------------------------------------------- */
+
+/* Primary buttons with accent */
+.main-button a {
+  background-color: var(--accent);
+  color: #fff;
+  font-weight: 500;
+  transition: all 150ms ease;
+}
+
+.main-button a:hover,
+.main-button a:focus {
+  background-color: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(230, 33, 42, 0.3);
+}
+
+/* Outline version (white text, accent border) */
+.main-button.outline a,
+.icon-button a {
+  background-color: transparent;
+  color: var(--accent);
+  border: 2px solid var(--accent);
+}
+
+.main-button.outline a:hover {
+  background-color: var(--accent);
+  color: #fff;
+}
+
+/* Form buttons */
+#contact-form button,
+.orange-button {
+  background-color: var(--accent);
+  color: #fff;
+  transition: all 150ms ease;
+}
+
+#contact-form button:hover,
+.orange-button:hover {
+  background-color: var(--accent-hover);
+  box-shadow: 0 4px 12px rgba(230, 33, 42, 0.3);
+}
+
+#contact-form button:focus,
+.orange-button:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------
+   Cards & Surfaces
+   --------------------------------------------- */
+
+/* Service cards */
+.services .service-item .main-content {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px var(--border);
+}
+
+.services .service-item:hover .main-content {
+  box-shadow: 0 4px 16px var(--border);
+}
+
+/* Icon circles - use accent */
+.services .service-item .icon {
+  background-color: var(--accent);
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+}
+
+/* Event/Course cards */
+.events_item {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px var(--border);
+}
+
+.events_item:hover {
+  box-shadow: 0 4px 16px var(--border);
+  transform: translateY(-4px);
+}
+
+/* Category badges */
+.events_item .thumb span.category {
+  background-color: var(--surface);
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+/* Price badges - gradient with accent */
+.events_item .thumb span.price {
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+}
+
+/* Team member cards */
+.team-member .main-content {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px var(--border);
+}
+
+/* Social icons on team cards */
+.team-member .main-content ul li a {
+  background-color: var(--bg);
+  color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+.team-member .main-content ul li a:hover {
+  background-color: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+/* ---------------------------------------------
+   Forms
+   --------------------------------------------- */
+
+/* Contact form container */
+.contact-us .contact-us-content {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Input fields */
+#contact-form input,
+#contact-form textarea {
+  background-color: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+#contact-form input:focus,
+#contact-form textarea:focus {
+  border-color: var(--accent);
+  outline: 2px solid rgba(230, 33, 42, 0.2);
+  outline-offset: 0;
+}
+
+#contact-form input::placeholder,
+#contact-form textarea::placeholder {
+  color: var(--muted);
+}
+
+/* ---------------------------------------------
+   Background Sections
+   --------------------------------------------- */
+
+/* Main banner - use surface on sections */
+.main-banner {
+  background: linear-gradient(135deg, var(--accent) 0%, #fffcdb 50%, var(--bg) 100%);
+}
+
+/* Sections with custom backgrounds */
+.section {
+  background-color: var(--bg);
+}
+
+/* Fun facts section - use light background */
+.fun-facts {
+  background-color: var(--bg);
+}
+
+.fun-facts:before {
+  display: none;
+}
+
+.fun-facts:after {
+  display: none;
+}
+
+/* Counter cards with accent background */
+.fun-facts .counter {
+  background-color: var(--accent);
+  border-radius: 25px;
+  padding: 40px 30px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 12px rgba(230, 33, 42, 0.2);
+  transition: all 150ms ease;
+}
+
+.fun-facts .counter:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(230, 33, 42, 0.3);
+}
+
+/* Counter text styling - white on accent background */
+.fun-facts h2 {
+  color: #fff !important;
+}
+
+.fun-facts p {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.fun-facts p.count-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+/* About section background */
+.about-us:before {
+  background-color: var(--surface);
+}
+
+/* Accordion - use surface for item container */
+.accordion {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.accordion-item {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Active accordion button */
+.accordion-button:not(.collapsed) {
+  color: var(--accent);
+}
+
+.accordion-button::after {
+  background-color: var(--accent);
+}
+
+/* Testimonials background */
+.testimonials:before {
+  background-color: var(--surface);
+}
+
+.testimonials .item {
+  background-color: var(--accent);
+}
+
+/* Contact section */
+.contact-us:before {
+  background-color: var(--surface);
+}
+
+.contact-us .special-offer {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Event filter */
+.event_filter {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+}
+
+.event_filter li a {
+  color: var(--text);
+}
+
+.event_filter li a.is_active,
+.event_filter li a:hover {
+  color: var(--accent);
+}
+
+/* ---------------------------------------------
+   Footer
+   --------------------------------------------- */
+
+footer {
+  background-color: var(--accent);
+}
+
+footer p {
+  color: #fff;
+}
+
+footer p a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+footer p a:hover {
+  opacity: 0.85;
+}
+
+/* ---------------------------------------------
+   Special Elements
+   --------------------------------------------- */
+
+/* Section headings */
+.section-heading h2 em {
+  color: var(--accent);
+}
+
+.section-heading h6 {
+  color: var(--accent);
+}
+
+/* Category spans */
+span.category {
+  color: var(--accent);
+}
+
+/* Author names in course cards */
+.events_item .down-content span.author {
+  color: var(--accent);
+}
+
+/* Hover effects on course titles */
+.events_item:hover .down-content h4 {
+  color: var(--accent);
+}
+
+/* Team member role */
+.team-member .main-content span.category {
+  color: var(--accent);
+}
+
+/* Price in course cards */
+.events_item .thumb span.price h6 {
+  color: #fff;
+}
+
+/* ---------------------------------------------
+   Hover States & Transitions
+   --------------------------------------------- */
+
+/* Smooth transitions for interactive elements */
+.events_item,
+.service-item .main-content,
+.team-member .main-content,
+.main-button a,
+#contact-form button,
+#contact-form input,
+#contact-form textarea {
+  transition: all 150ms ease;
+}
+
+/* ---------------------------------------------
+   Focus States (Accessibility)
+   --------------------------------------------- */
+
+/* Focus outline for links and buttons */
+a:focus,
+button:focus,
+.main-button a:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Form focus states */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid rgba(230, 33, 42, 0.3);
+  outline-offset: 0;
+}
+
+/* ---------------------------------------------
+   Mobile Responsive Adjustments
+   --------------------------------------------- */
+
+@media (max-width: 767px) {
+  /* Mobile nav menu background */
+  .header-area .main-nav .nav,
+  .background-header .main-nav .nav {
+    background-color: var(--surface);
+  }
+  
+  /* Mobile menu links */
+  .header-area .main-nav .nav li a,
+  .background-header .main-nav .nav li a {
+    color: var(--text);
+    background-color: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  
+  /* Active state on mobile */
+  .header-area.header-sticky .nav li a.active {
+    color: var(--accent) !important;
+    background-color: rgba(230, 33, 42, 0.1) !important;
+  }
+}
+
+/* ---------------------------------------------
+   Optional Dark Mode (Commented Out)
+   Uncomment to enable dark mode support
+   --------------------------------------------- */
+
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: var(--bg-dark);
+    --surface: var(--surface-dark);
+    --text: var(--text-dark);
+    --muted: #999;
+    --border: rgba(255, 255, 255, 0.1);
+  }
+  
+  body {
+    background-color: var(--bg-dark);
+    color: var(--text-dark);
+  }
+}
+*/
+
+/* ---------------------------------------------
+   Accessibility Enhancements
+   --------------------------------------------- */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: rgba(0, 0, 0, 0.2);
+  }
+  
+  .events_item,
+  .service-item .main-content,
+  .team-member .main-content {
+    border-width: 2px;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
