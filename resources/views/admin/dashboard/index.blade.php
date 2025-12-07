@@ -23,7 +23,6 @@
 			</ul>
 		</div>
 		<div class="d-flex align-items-center gap-2 gap-lg-3">
-			<a href="{{ route('admin.quick-actions') }}" class="btn btn-sm fw-bold btn-primary">Quick Actions</a>
 		</div>
 	</div>
 </div>

@@ -3,12 +3,22 @@
 @section('title', 'Lengkapi Data Diri')
 
 @section('content')
-<section class="section-padding">
+<header class="site-header" style="padding-top: 100px; padding-bottom: 40px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h1 class="text-white mb-0" style="font-size: 2rem;">Lengkapi Data Diri</h1>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="section-padding section-bg" style="padding-top: 40px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8 col-12">
                 <div class="custom-block bg-white shadow-lg p-4">
-                    <h3 class="mb-4 text-center">Lengkapi Data Diri</h3>
+                    <h3 class="mb-4 text-center">Form Data Diri</h3>
                     
                     @if(session('success'))
                         <div class="alert alert-success">
@@ -25,81 +35,126 @@
                         </ul>
                     </div>
 
-                    <form action="{{ route('enrollment.store-complete-data') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="mb-3">
-                            <label class="form-label">Nomor Telepon <span class="text-danger">*</span></label>
-                            <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" 
-                                   value="{{ old('phone', $profile->phone ?? '') }}" required>
-                            @error('phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                    @if($profile && $profile->phone && $profile->address && $profile->ktp_path && $profile->kk_path)
+                        <div class="alert alert-success">
+                            <h6 class="mb-2">Data Diri Anda Sudah Lengkap!</h6>
+                            <p class="mb-0">Kami sedang memverifikasi pendaftaran Anda. Mohon tunggu konfirmasi dari admin.</p>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Alamat <span class="text-danger">*</span></label>
-                            <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="3" required>{{ old('address', $profile->address ?? '') }}</textarea>
-                            @error('address')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="mb-4">
+                            <h6>Ringkasan Data:</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Telepon:</strong> {{ $profile->phone }}</li>
+                                <li><strong>Alamat:</strong> {{ $profile->address }}</li>
+                                <li><strong>KTP:</strong> <a href="{{ asset('storage/' . $profile->ktp_path) }}" target="_blank">Lihat</a></li>
+                                <li><strong>KK:</strong> <a href="{{ asset('storage/' . $profile->kk_path) }}" target="_blank">Lihat</a></li>
+                                @if($profile->photo_path)
+                                    <li><strong>Foto:</strong> <a href="{{ asset('storage/' . $profile->photo_path) }}" target="_blank">Lihat</a></li>
+                                @endif
+                            </ul>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Foto Profil</label>
-                            <input type="file" name="photo" class="form-control @error('photo') is-invalid @enderror" 
-                                   accept="image/jpeg,image/png,image/jpg">
-                            @if($profile && $profile->photo_path)
-                                <small class="text-muted">Foto saat ini: <a href="{{ asset('storage/' . $profile->photo_path) }}" target="_blank">Lihat</a></small>
-                            @endif
-                            @error('photo')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                        <div class="d-grid">
+                            <a href="{{ route('student.my-courses') }}" class="btn custom-btn">Lihat Kursus Saya</a>
                         </div>
+                    @else
+                        <form action="{{ route('enrollment.store-complete-data') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
 
-                        <div class="mb-3">
-                            <label class="form-label">KTP <span class="text-danger">*</span></label>
-                            <input type="file" name="ktp" class="form-control @error('ktp') is-invalid @enderror" 
-                                   accept=".pdf,image/jpeg,image/png,image/jpg" required>
-                            @if($profile && $profile->ktp_path)
-                                <small class="text-muted">KTP saat ini: <a href="{{ asset('storage/' . $profile->ktp_path) }}" target="_blank">Lihat</a></small>
-                            @endif
-                            @error('ktp')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nomor Telepon <span class="text-danger">*</span></label>
+                                <input type="text" name="phone" class="form-control @error('phone') is-invalid @enderror" 
+                                       value="{{ old('phone', $profile->phone ?? '') }}" required>
+                                @error('phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Kartu Keluarga (KK) <span class="text-danger">*</span></label>
-                            <input type="file" name="kk" class="form-control @error('kk') is-invalid @enderror" 
-                                   accept=".pdf,image/jpeg,image/png,image/jpg" required>
-                            @if($profile && $profile->kk_path)
-                                <small class="text-muted">KK saat ini: <a href="{{ asset('storage/' . $profile->kk_path) }}" target="_blank">Lihat</a></small>
-                            @endif
-                            @error('kk')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                            <small class="text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                                <textarea name="address" class="form-control @error('address') is-invalid @enderror" rows="3" required>{{ old('address', $profile->address ?? '') }}</textarea>
+                                @error('address')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div class="alert alert-warning">
-                            <small>
-                                <strong>Penting:</strong> Pastikan semua data yang Anda isi benar dan dokumen yang diupload jelas dan valid. 
-                                Data ini akan digunakan untuk verifikasi pendaftaran Anda.
-                            </small>
-                        </div>
+                            <div class="mb-3">
+                                <label class="form-label">Foto Profil</label>
+                                <input type="file" name="photo" class="form-control @error('photo') is-invalid @enderror" 
+                                       accept="image/jpeg,image/png,image/jpg">
+                                @if($profile && $profile->photo_path)
+                                    <small class="text-muted">Foto saat ini: <a href="{{ asset('storage/' . $profile->photo_path) }}" target="_blank">Lihat</a></small>
+                                @endif
+                                @error('photo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn custom-btn">Simpan Data</button>
-                            <a href="{{ route('student.my-courses') }}" class="btn btn-outline-secondary">Lewati (Nanti)</a>
-                        </div>
-                    </form>
+                            <div class="mb-3">
+                                <label class="form-label">KTP <span class="text-danger">*</span></label>
+                                <input type="file" name="ktp" class="form-control @error('ktp') is-invalid @enderror" 
+                                       accept=".pdf,image/jpeg,image/png,image/jpg" required>
+                                @if($profile && $profile->ktp_path)
+                                    <small class="text-muted">KTP saat ini: <a href="{{ asset('storage/' . $profile->ktp_path) }}" target="_blank">Lihat</a></small>
+                                @endif
+                                @error('ktp')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kartu Keluarga (KK) <span class="text-danger">*</span></label>
+                                <input type="file" name="kk" class="form-control @error('kk') is-invalid @enderror" 
+                                       accept=".pdf,image/jpeg,image/png,image/jpg" required>
+                                @if($profile && $profile->kk_path)
+                                    <small class="text-muted">KK saat ini: <a href="{{ asset('storage/' . $profile->kk_path) }}" target="_blank">Lihat</a></small>
+                                @endif
+                                @error('kk')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Format: PDF, JPG, PNG (Max: 2MB)</small>
+                            </div>
+
+                            <div class="alert alert-warning">
+                                <small>
+                                    <strong>Penting:</strong> Pastikan semua data yang Anda isi benar dan dokumen yang diupload jelas dan valid. 
+                                    Data ini akan digunakan untuk verifikasi pendaftaran Anda.
+                                </small>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn custom-btn">Simpan Data</button>
+                                <a href="{{ route('student.my-courses') }}" class="btn btn-outline-secondary">Lewati (Nanti)</a>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    @media (max-width: 767.98px) {
+        .section-padding {
+            padding: 30px 0 !important;
+        }
+        .custom-block {
+            border-radius: 12px;
+        }
+    }
+    
+    @media (max-width: 575.98px) {
+        header.site-header {
+            padding-top: 80px !important;
+            padding-bottom: 30px !important;
+        }
+        header.site-header h1 {
+            font-size: 1.5rem !important;
+        }
+    }
+</style>
 @endsection
 
 

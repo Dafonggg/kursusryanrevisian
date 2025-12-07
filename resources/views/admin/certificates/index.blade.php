@@ -72,6 +72,8 @@
 						<th>No. Sertifikat</th>
 						<th>Siswa</th>
 						<th>Kursus</th>
+						<th class="text-center">Nilai Ujian</th>
+						<th class="text-center">Nilai Praktikum</th>
 						<th>Tanggal Terbit</th>
 						<th>Status</th>
 						<th>Aksi</th>
@@ -79,14 +81,41 @@
 				</thead>
 				<tbody>
 					@forelse($certificates as $certificate)
+						@php
+							$finalSubmission = $certificate->enrollment->getFinalExamSubmission();
+							$practicumSubmission = $certificate->enrollment->getPracticumSubmission();
+							$canGenerate = $certificate->enrollment->canGetCertificate();
+						@endphp
 						<tr>
 							<td class="text-gray-900 fw-bold">{{ $certificate->certificate_no }}</td>
 							<td>
-								<span class="text-gray-900 fw-semibold">{{ $certificate->enrollment->user->name }}</span>
-								<br>
-								<span class="text-gray-500 fs-7">{{ $certificate->enrollment->user->email }}</span>
+								@if($certificate->enrollment->user)
+									<span class="text-gray-900 fw-semibold">{{ $certificate->enrollment->user->name }}</span>
+									<br>
+									<span class="text-gray-500 fs-7">{{ $certificate->enrollment->user->email }}</span>
+								@else
+									<span class="text-gray-500 fw-semibold fst-italic">User Dihapus</span>
+								@endif
 							</td>
 							<td class="text-gray-900">{{ $certificate->enrollment->course->title }}</td>
+							<td class="text-center">
+								@if($finalSubmission && $finalSubmission->score !== null)
+									<span class="badge badge-light-{{ $finalSubmission->status->value === 'passed' ? 'success' : 'danger' }} fs-6">
+										{{ $finalSubmission->score }}
+									</span>
+								@else
+									<span class="text-muted">-</span>
+								@endif
+							</td>
+							<td class="text-center">
+								@if($practicumSubmission && $practicumSubmission->score !== null)
+									<span class="badge badge-light-{{ $practicumSubmission->status->value === 'passed' ? 'success' : 'danger' }} fs-6">
+										{{ $practicumSubmission->score }}
+									</span>
+								@else
+									<span class="text-muted">-</span>
+								@endif
+							</td>
 							<td class="text-gray-700">{{ $certificate->issued_at->format('d/m/Y') }}</td>
 							<td>
 								@if($certificate->status->value === 'pending')
@@ -129,23 +158,28 @@
 										</a>
 									@endif
 
-									@if(!$certificate->file_path && $certificate->enrollment->status->value === 'completed')
-										<form action="{{ route('admin.certificates.generate', $certificate->enrollment->id) }}" method="POST" class="d-inline">
-											@csrf
-											<button type="submit" class="btn btn-sm btn-info" onclick="return confirm('Generate PDF sertifikat?')">
-												<i class="ki-duotone ki-file fs-5">
-													<span class="path1"></span>
-													<span class="path2"></span>
-												</i>
-											</button>
-										</form>
+									@if(!$certificate->file_path)
+										@if($canGenerate)
+											<form action="{{ route('admin.certificates.generate', $certificate->enrollment->id) }}" method="POST" class="d-inline">
+												@csrf
+												<button type="submit" class="btn btn-sm btn-info" onclick="return confirm('Generate PDF sertifikat?')">
+													<i class="ki-duotone ki-file fs-5">
+														<span class="path1"></span>
+														<span class="path2"></span>
+													</i>
+													Generate
+												</button>
+											</form>
+										@else
+											<span class="badge badge-light-warning fs-7">Belum lulus ujian</span>
+										@endif
 									@endif
 								</div>
 							</td>
 						</tr>
 					@empty
 						<tr>
-							<td colspan="6" class="text-center text-muted py-10">Belum ada sertifikat</td>
+							<td colspan="8" class="text-center text-muted py-10">Belum ada sertifikat</td>
 						</tr>
 					@endforelse
 				</tbody>

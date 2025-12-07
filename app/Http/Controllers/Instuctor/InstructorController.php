@@ -221,14 +221,6 @@ class InstructorController extends Controller
         ->count();
     }
 
-    /**
-     * Menampilkan halaman Quick Actions
-     */
-    public function quickActions()
-    {
-        return view('instructor.quick-actions');
-    }
-
     // ==================== PESERTA KURSUS METHODS ====================
     
     /**

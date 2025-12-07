@@ -77,6 +77,32 @@
 </section>
 
 
+<section class="section-padding" id="course-materials">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-12 m-auto">
+                <h3 class="mb-4">Materi yang Akan Dipelajari</h3>
+                
+                @if($course->materials->count() > 0)
+                    <div class="list-group">
+                        @foreach($course->materials->sortBy('order') as $index => $material)
+                            <div class="list-group-item d-flex align-items-center">
+                                <span class="badge bg-primary rounded-pill me-3">{{ $index + 1 }}</span>
+                                <div>
+                                    <h6 class="mb-0">{{ $material->title }}</h6>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @else
+                    <p class="text-muted">Belum ada materi yang tersedia untuk kursus ini.</p>
+                @endif
+            </div>
+        </div>
+    </div>
+</section>
+
+
 <section class="section-padding section-bg" id="enrollment">
     <div class="container">
         <div class="row justify-content-center">

@@ -55,7 +55,6 @@
 					<div class="card-body pt-0">
 						<p class="text-gray-600 fs-6 mb-4">{{ \Illuminate\Support\Str::limit($enrollment->course->description, 100) }}</p>
 						<div class="d-flex justify-content-between align-items-center">
-							<span class="badge badge-light-primary">{{ ucfirst($enrollment->modality) }}</span>
 							<a href="{{ route('student.materials.course', $enrollment->course->slug) }}" class="btn btn-sm btn-primary">
 								Lihat Materi
 								<i class="ki-duotone ki-arrow-right fs-3 ms-1">

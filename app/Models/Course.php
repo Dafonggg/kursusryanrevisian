@@ -65,6 +65,26 @@ class Course extends Model
         return $this->hasMany(Enrollment::class);
     }
 
+    public function finalExams()
+    {
+        return $this->hasMany(FinalExam::class);
+    }
+
+    public function practicumExams()
+    {
+        return $this->hasMany(PracticumExam::class);
+    }
+
+    public function activeFinalExam()
+    {
+        return $this->hasOne(FinalExam::class)->where('is_active', true);
+    }
+
+    public function activePracticumExam()
+    {
+        return $this->hasOne(PracticumExam::class)->where('is_active', true);
+    }
+
     /** Route model binding pakai slug (opsional, enak buat URL) */
     public function getRouteKeyName(): string
     {

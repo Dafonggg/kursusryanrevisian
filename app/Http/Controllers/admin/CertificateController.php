@@ -18,7 +18,12 @@ class CertificateController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Certificate::with(['enrollment.course', 'enrollment.user']);
+        $query = Certificate::with([
+            'enrollment.course.activeFinalExam',
+            'enrollment.course.activePracticumExam',
+            'enrollment.examSubmissions',
+            'enrollment.user'
+        ]);
 
         // Filter by status
         if ($request->filled('status')) {
@@ -57,12 +62,12 @@ class CertificateController extends Controller
      */
     public function generate($enrollmentId)
     {
-        $enrollment = Enrollment::with(['course', 'user'])->findOrFail($enrollmentId);
+        $enrollment = Enrollment::with(['course', 'user', 'examSubmissions'])->findOrFail($enrollmentId);
 
-        // Cek apakah enrollment sudah completed
-        if ($enrollment->status !== EnrollmentStatus::Completed) {
+        // Cek apakah enrollment memenuhi syarat sertifikat (lulus ujian)
+        if (!$enrollment->canGetCertificate()) {
             return redirect()->route('admin.certificates.index')
-                ->with('error', 'Enrollment harus dalam status completed untuk generate sertifikat.');
+                ->with('error', 'Student belum memenuhi syarat. Pastikan sudah menyelesaikan materi dan lulus ujian.');
         }
 
         // Cek apakah sertifikat sudah ada, jika tidak buat baru
@@ -71,8 +76,16 @@ class CertificateController extends Controller
             $certificate = Certificate::issueFor($enrollment);
         }
 
-        // Generate PDF
-        $pdf = Pdf::loadView('certificates.template', compact('certificate'));
+        // Get nilai ujian
+        $finalExamSubmission = $enrollment->getFinalExamSubmission();
+        $practicumSubmission = $enrollment->getPracticumSubmission();
+
+        // Generate PDF dengan nilai
+        $pdf = Pdf::loadView('certificates.template', [
+            'certificate' => $certificate,
+            'finalScore' => $finalExamSubmission?->score,
+            'practicumScore' => $practicumSubmission?->score,
+        ]);
         $pdf->setPaper('a4', 'landscape');
         
         // Simpan PDF ke storage

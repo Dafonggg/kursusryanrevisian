@@ -161,14 +161,6 @@ class AdminController extends Controller
     }
 
     /**
-     * Display quick actions page
-     */
-    public function quickActions()
-    {
-        return view('admin.quick-actions');
-    }
-
-    /**
      * Export financial data to CSV
      */
     public function exportFinancialData()

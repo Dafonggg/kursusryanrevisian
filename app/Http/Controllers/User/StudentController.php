@@ -189,6 +189,27 @@ class StudentController extends Controller
         ))->with('showCertificateOnly', true);
     }
 
+    /**
+     * Download certificate as PDF
+     */
+    public function downloadCertificate(Certificate $certificate)
+    {
+        $user = Auth::user();
+        
+        // Verify certificate belongs to user
+        if ($certificate->enrollment->user_id !== $user->id) {
+            abort(403, 'Unauthorized');
+        }
+        
+        // Check if file exists
+        if (!$certificate->file_path || !Storage::exists($certificate->file_path)) {
+            return redirect()->route('student.certificate')
+                ->with('error', 'File sertifikat tidak tersedia.');
+        }
+        
+        return Storage::download($certificate->file_path, 'sertifikat-' . $certificate->certificate_no . '.pdf');
+    }
+
     public function chat()
     {
         $user = Auth::user();
@@ -302,7 +323,7 @@ class StudentController extends Controller
             $course = Course::where('slug', $courseSlug)->firstOrFail();
             $enrollment = Enrollment::where('user_id', $user->id)
                 ->where('course_id', $course->id)
-                ->where('status', EnrollmentStatus::Active)
+                ->whereIn('status', [EnrollmentStatus::Active, EnrollmentStatus::Completed])
                 ->firstOrFail();
             
             $materials = CourseMaterial::where('course_id', $course->id)
@@ -348,7 +369,7 @@ class StudentController extends Controller
         
         // Jika tidak ada courseSlug, tampilkan semua kursus yang diikuti
         $enrollments = Enrollment::where('user_id', $user->id)
-            ->where('status', EnrollmentStatus::Active)
+            ->whereIn('status', [EnrollmentStatus::Active, EnrollmentStatus::Completed])
             ->with(['course.materials' => function($query) {
                 $query->orderBy('order');
             }])
@@ -367,7 +388,7 @@ class StudentController extends Controller
         $course = Course::where('slug', $courseSlug)->firstOrFail();
         $enrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
-            ->where('status', EnrollmentStatus::Active)
+            ->whereIn('status', [EnrollmentStatus::Active, EnrollmentStatus::Completed])
             ->firstOrFail();
         
         $material = CourseMaterial::where('id', $materialId)
@@ -420,7 +441,7 @@ class StudentController extends Controller
         $course = Course::where('slug', $courseSlug)->firstOrFail();
         $enrollment = Enrollment::where('user_id', $user->id)
             ->where('course_id', $course->id)
-            ->where('status', EnrollmentStatus::Active)
+            ->whereIn('status', [EnrollmentStatus::Active, EnrollmentStatus::Completed])
             ->firstOrFail();
         
         $material = CourseMaterial::where('id', $materialId)
@@ -626,11 +647,12 @@ class StudentController extends Controller
         foreach ($certificates as $cert) {
             $course = $cert->enrollment->course;
             $ready_certificates[] = (object)[
+                'id' => $cert->id,
                 'course_name' => $course->title,
-                'course_category' => 'Kursus', // Bisa disesuaikan jika ada kategori
+                'course_category' => 'Kursus',
                 'course_image' => $course->image ? Storage::url($course->image) : asset('metronic_html_v8.2.9_demo1/demo1/assets/media/stock/600x400/img-1.jpg'),
                 'certificate_date' => $cert->issued_at ? $cert->issued_at->format('d M Y') : '-',
-                'certificate_url' => $cert->file_path ? Storage::url($cert->file_path) : '#',
+                'certificate_url' => $cert->file_path ? route('student.certificate.download', $cert->id) : '#',
             ];
         }
         

@@ -55,6 +55,11 @@ class Enrollment extends Model
         return $this->hasMany(MaterialProgress::class);
     }
 
+    public function examSubmissions()
+    {
+        return $this->hasMany(ExamSubmission::class);
+    }
+
     /* ======================
        LOGIC BAWAAN (PENTING)
        ====================== */
@@ -140,5 +145,90 @@ class Enrollment extends Model
             return true;
         }
         return false;
+    }
+
+    /**
+     * Cek apakah student bisa mengikuti ujian akhir
+     */
+    public function canTakeExam(): bool
+    {
+        return $this->isAllMaterialsCompleted() 
+            && in_array($this->status, [EnrollmentStatus::Active, EnrollmentStatus::Completed]);
+    }
+
+    /**
+     * Cek apakah student sudah lulus ujian final
+     */
+    public function hasPassedFinalExam(): bool
+    {
+        $finalExam = $this->course->activeFinalExam;
+        if (!$finalExam) {
+            return true;
+        }
+
+        return $this->examSubmissions()
+            ->where('exam_type', 'final_exam')
+            ->where('exam_id', $finalExam->id)
+            ->where('status', 'passed')
+            ->exists();
+    }
+
+    /**
+     * Cek apakah student sudah lulus praktikum
+     */
+    public function hasPassedPracticum(): bool
+    {
+        $practicumExam = $this->course->activePracticumExam;
+        if (!$practicumExam) {
+            return true;
+        }
+
+        return $this->examSubmissions()
+            ->where('exam_type', 'practicum')
+            ->where('exam_id', $practicumExam->id)
+            ->where('status', 'passed')
+            ->exists();
+    }
+
+    /**
+     * Cek apakah student berhak mendapat sertifikat
+     */
+    public function canGetCertificate(): bool
+    {
+        return $this->isAllMaterialsCompleted()
+            && $this->hasPassedFinalExam()
+            && $this->hasPassedPracticum();
+    }
+
+    /**
+     * Get submission untuk final exam
+     */
+    public function getFinalExamSubmission()
+    {
+        $finalExam = $this->course->activeFinalExam;
+        if (!$finalExam) {
+            return null;
+        }
+
+        return $this->examSubmissions()
+            ->where('exam_type', 'final_exam')
+            ->where('exam_id', $finalExam->id)
+            ->first();
+    }
+
+    /**
+     * Get submission untuk practicum
+     */
+    public function getPracticumSubmission()
+    {
+        $practicumExam = $this->course->activePracticumExam;
+        if (!$practicumExam) {
+            return null;
+        }
+
+        return $this->examSubmissions()
+            ->where('exam_type', 'practicum')
+            ->where('exam_id', $practicumExam->id)
+            ->first();
     }
 }

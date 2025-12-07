@@ -53,6 +53,8 @@
                     <ul class="dropdown-menu dropdown-menu-light shadow-sm w-100" aria-labelledby="navbarLightDropdownMenuLink" style="min-width: 200px;">
                         <li><a class="dropdown-item py-2 px-3 {{ request()->routeIs('daftar-kursus') ? 'active bg-light' : '' }}" href="{{ url('/daftar-kursus') }}">Daftar Kursus</a></li>
                         <li><hr class="dropdown-divider my-1"></li>
+                        <li><a class="dropdown-item py-2 px-3 {{ request()->routeIs('verify-certificate') ? 'active bg-light' : '' }}" href="{{ route('verify-certificate') }}">Cek Sertifikat</a></li>
+                        <li><hr class="dropdown-divider my-1"></li>
                         <li><a class="dropdown-item py-2 px-3 {{ request()->routeIs('contact') ? 'active bg-light' : '' }}" href="{{ url('/contact') }}">Contact Form</a></li>
                     </ul>
                 </li>

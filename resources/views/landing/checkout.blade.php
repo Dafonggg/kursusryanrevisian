@@ -3,14 +3,21 @@
 @section('title', 'Checkout')
 
 @section('content')
-<section class="section-padding">
+<header class="site-header" style="padding-top: 100px; padding-bottom: 40px;">
     <div class="container">
         <div class="row">
-            <div class="col-lg-12 col-12 mb-4">
-                <h3 class="mb-4">Checkout</h3>
+            <div class="col-lg-12 col-12 text-center">
+                <h1 class="text-white mb-0" style="font-size: 2rem;">Checkout</h1>
             </div>
+        </div>
+    </div>
+</header>
 
-            <div class="col-lg-8 col-12">
+<section class="section-padding section-bg" style="padding-top: 40px;">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-7 col-12 mb-4 mb-lg-0">
                 <div class="custom-block bg-white shadow-lg p-4 mb-4">
                     <h5 class="mb-3">Kursus yang Dipilih</h5>
                     @foreach($courses as $course)
@@ -35,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-4 col-12">
+            <div class="col-lg-5 col-12">
                 <div class="custom-block bg-white shadow-lg p-4">
                     <h5 class="mb-4">Metode Pembayaran</h5>
                     
@@ -67,6 +74,7 @@
                                 <label class="form-check-label" for="qris">
                                     <strong>QRIS</strong>
                                     <p class="small text-muted mb-0">Scan QR code untuk pembayaran cepat</p>
+                                    <img src="{{ asset('images/qris.jpg') }}" alt="QRIS" width="100">
                                 </label>
                             </div>
                             <div class="form-check">

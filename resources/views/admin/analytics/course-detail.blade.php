@@ -110,10 +110,10 @@
 						@endphp
 						<tr>
 							<td>
-								<span class="text-gray-900 fw-bold">{{ $enrollment->user->name }}</span>
+								<span class="text-gray-900 fw-bold">{{ $enrollment->user->name ?? 'User Deleted' }}</span>
 							</td>
 							<td>
-								<span class="text-gray-500 fs-7">{{ $enrollment->user->email }}</span>
+								<span class="text-gray-500 fs-7">{{ $enrollment->user->email ?? '-' }}</span>
 							</td>
 							<td>
 								<span class="badge {{ $statusClass }}">{{ ucfirst($enrollment->status->value) }}</span>
@@ -133,7 +133,7 @@
 							</td>
 							<td>
 								@php
-									$paymentStatus = $enrollment->payments->first()->status->value ?? 'pending';
+									$paymentStatus = $enrollment->payments->first()?->status->value ?? 'pending';
 									$paymentClass = match($paymentStatus) {
 										'paid' => 'badge-light-success',
 										'pending' => 'badge-light-warning',

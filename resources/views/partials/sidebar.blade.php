@@ -111,7 +111,7 @@
 						<div class="menu-item {{ request()->routeIs('student.materials*') ? 'here show' : '' }}">
 							<a class="menu-link {{ request()->routeIs('student.materials*') ? 'active' : '' }}" href="{{ route('student.materials') }}">
 								<span class="menu-icon">
-									<i class="ki-duotone ki-video fs-2">
+									<i class="ki-duotone ki-file fs-2">
 										<span class="path1"></span>
 										<span class="path2"></span>
 									</i>
@@ -162,6 +162,64 @@
 						</div>
 					@endif
 
+					{{-- Ujian Akhir - Role Specific --}}
+					@if($effectiveRole === 'admin')
+						<div class="menu-item {{ request()->routeIs('admin.exam-results.*') ? 'here show' : '' }}">
+							<a class="menu-link {{ request()->routeIs('admin.exam-results.*') ? 'active' : '' }}" href="{{ route('admin.exam-results.index') }}">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notepad-edit fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+									</i>
+								</span>
+								<span class="menu-title">Hasil Ujian</span>
+							</a>
+						</div>
+					@elseif($effectiveRole === 'instructor')
+						<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ request()->routeIs('instructor.exams.*') ? 'here show' : '' }}">
+							<span class="menu-link">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notepad-edit fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+									</i>
+								</span>
+								<span class="menu-title">Ujian Akhir</span>
+								<span class="menu-arrow"></span>
+							</span>
+							<div class="menu-sub menu-sub-accordion {{ request()->routeIs('instructor.exams.*') ? 'show' : '' }}">
+								<div class="menu-item">
+									<a class="menu-link {{ request()->routeIs('instructor.exams.overview') || request()->routeIs('instructor.exams.index') || request()->routeIs('instructor.exams.create-*') ? 'active' : '' }}" href="{{ route('instructor.exams.overview') }}">
+										<span class="menu-bullet">
+											<span class="bullet bullet-dot"></span>
+										</span>
+										<span class="menu-title">Kelola Soal</span>
+									</a>
+								</div>
+								<div class="menu-item">
+									<a class="menu-link {{ request()->routeIs('instructor.exams.submissions') || request()->routeIs('instructor.exams.show-submission') || request()->routeIs('instructor.exams.grade') ? 'active' : '' }}" href="{{ route('instructor.exams.submissions') }}">
+										<span class="menu-bullet">
+											<span class="bullet bullet-dot"></span>
+										</span>
+										<span class="menu-title">Nilai Jawaban</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					@elseif($effectiveRole === 'student')
+						<div class="menu-item {{ request()->routeIs('student.exams.*') ? 'here show' : '' }}">
+							<a class="menu-link {{ request()->routeIs('student.exams.*') ? 'active' : '' }}" href="{{ route('student.exams.index') }}">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notepad-edit fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+									</i>
+								</span>
+								<span class="menu-title">Ujian Akhir</span>
+							</a>
+						</div>
+					@endif
+
 					{{-- Sertifikat - Role Specific --}}
 					@if($effectiveRole === 'admin')
 						<div class="menu-item {{ request()->routeIs('admin.certificates.*') ? 'here show' : '' }}">
@@ -201,14 +259,59 @@
 						</div>
 					@endif
 
+					{{-- Pengumuman - Role Specific --}}
+					@if($effectiveRole === 'admin')
+						<div class="menu-item {{ request()->routeIs('admin.announcements.*') ? 'here show' : '' }}">
+							<a class="menu-link {{ request()->routeIs('admin.announcements.*') ? 'active' : '' }}" href="{{ route('admin.announcements.index') }}">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notification fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+										<span class="path3"></span>
+									</i>
+								</span>
+								<span class="menu-title">Pengumuman</span>
+							</a>
+						</div>
+					@elseif($effectiveRole === 'instructor')
+						<div class="menu-item {{ request()->routeIs('instructor.announcements.*') ? 'here show' : '' }}">
+							<a class="menu-link {{ request()->routeIs('instructor.announcements.*') ? 'active' : '' }}" href="{{ route('instructor.announcements.index') }}">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notification fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+										<span class="path3"></span>
+									</i>
+								</span>
+								<span class="menu-title">Pengumuman</span>
+							</a>
+						</div>
+					@elseif($effectiveRole === 'student')
+						<div class="menu-item {{ request()->routeIs('student.announcements.*') ? 'here show' : '' }}">
+							<a class="menu-link {{ request()->routeIs('student.announcements.*') ? 'active' : '' }}" href="{{ route('student.announcements.index') }}">
+								<span class="menu-icon">
+									<i class="ki-duotone ki-notification fs-2">
+										<span class="path1"></span>
+										<span class="path2"></span>
+										<span class="path3"></span>
+									</i>
+								</span>
+								<span class="menu-title">Pengumuman</span>
+							</a>
+						</div>
+					@endif
+
 					{{-- Admin Only: Pengguna --}}
 					@if($effectiveRole === 'admin')
 						<div class="menu-item {{ request()->routeIs('admin.users.*') ? 'here show' : '' }}">
 							<a class="menu-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
 								<span class="menu-icon">
-									<i class="ki-duotone ki-users fs-2">
+									<i class="ki-duotone ki-people fs-2">
 										<span class="path1"></span>
 										<span class="path2"></span>
+										<span class="path3"></span>
+										<span class="path4"></span>
+										<span class="path5"></span>
 									</i>
 								</span>
 								<span class="menu-title">Pengguna</span>
@@ -236,9 +339,10 @@
 						<div class="menu-item {{ request()->routeIs('admin.chat.*') ? 'here show' : '' }}">
 							<a class="menu-link {{ request()->routeIs('admin.chat.*') ? 'active' : '' }}" href="{{ route('admin.chat.index') }}">
 								<span class="menu-icon">
-									<i class="ki-duotone ki-chat fs-2">
+									<i class="ki-duotone ki-message-text-2 fs-2">
 										<span class="path1"></span>
 										<span class="path2"></span>
+										<span class="path3"></span>
 									</i>
 								</span>
 								<span class="menu-title">Chat</span>
@@ -353,20 +457,6 @@
 		</div>
 	</div>
 	<div class="app-sidebar-footer flex-column-auto pt-2 pb-6 px-6" id="kt_app_sidebar_footer">
-		@php
-			$quickActionRoute = match($effectiveRole) {
-				'admin' => route('admin.quick-actions'),
-				'instructor' => route('instructor.quick-actions'),
-				default => route('student.dashboard'),
-			};
-		@endphp
-		<a href="{{ $quickActionRoute }}" class="btn btn-flex flex-center btn-custom btn-primary overflow-hidden text-nowrap px-0 h-40px w-100">
-			<span class="btn-label">Quick Actions</span>
-			<i class="ki-duotone ki-rocket btn-icon fs-2 m-0">
-				<span class="path1"></span>
-				<span class="path2"></span>
-			</i>
-		</a>
 	</div>
 </div>
 <!--end::Sidebar-->

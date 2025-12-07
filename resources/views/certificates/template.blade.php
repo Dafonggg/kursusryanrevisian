@@ -44,6 +44,11 @@
             text-align: center;
             margin-bottom: 40px;
         }
+        .header .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 20px;
+        }
         .header h1 {
             font-size: 48px;
             color: #667eea;
@@ -55,6 +60,12 @@
             font-size: 18px;
             color: #666;
             margin: 10px 0;
+        }
+        .header .certificate-no {
+            font-size: 14px;
+            color: #999;
+            margin: 5px 0;
+            letter-spacing: 1px;
         }
         .content {
             text-align: center;
@@ -81,6 +92,30 @@
             font-weight: bold;
             margin: 20px 0;
         }
+        .scores {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+        }
+        .score-item {
+            text-align: center;
+        }
+        .score-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .score-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .score-value.exam {
+            color: #667eea;
+        }
+        .score-value.practicum {
+            color: #764ba2;
+        }
         .footer {
             margin-top: 60px;
             display: flex;
@@ -96,13 +131,7 @@
             margin: 60px auto 10px;
             width: 150px;
         }
-        .certificate-no {
-            position: absolute;
-            bottom: 20px;
-            right: 40px;
-            font-size: 12px;
-            color: #999;
-        }
+
         .date {
             font-size: 16px;
             color: #666;
@@ -114,8 +143,10 @@
     <div class="certificate-container">
         <div class="certificate">
             <div class="header">
+                <img src="{{ public_path('images/logobaru1.png') }}" alt="Logo" class="logo">
                 <h1>SERTIFIKAT</h1>
                 <p>Kursus Ryan Komputer</p>
+                <p class="certificate-no">No. {{ $certificate->certificate_no }}</p>
             </div>
             
             <div class="content">
@@ -123,6 +154,24 @@
                 <div class="student-name">{{ $certificate->enrollment->user->name }}</div>
                 <p>telah menyelesaikan kursus</p>
                 <div class="course-name">{{ $certificate->enrollment->course->title }}</div>
+                
+                @if(isset($finalScore) || isset($practicumScore))
+                <div class="scores">
+                    @if(isset($finalScore) && $finalScore !== null)
+                    <div class="score-item">
+                        <div class="score-label">Nilai Ujian</div>
+                        <div class="score-value exam">{{ $finalScore }}</div>
+                    </div>
+                    @endif
+                    @if(isset($practicumScore) && $practicumScore !== null)
+                    <div class="score-item">
+                        <div class="score-label">Nilai Praktikum</div>
+                        <div class="score-value practicum">{{ $practicumScore }}</div>
+                    </div>
+                    @endif
+                </div>
+                @endif
+                
                 <p>dengan baik dan berhak mendapatkan sertifikat ini.</p>
             </div>
             
@@ -138,9 +187,7 @@
                 </div>
             </div>
             
-            <div class="certificate-no">
-                No. {{ $certificate->certificate_no }}
-            </div>
+
         </div>
     </div>
 </body>

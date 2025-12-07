@@ -20,8 +20,14 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ChatController;
 use App\Http\Controllers\Admin\AnalyticsController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Instuctor\InstructorController;
 use App\Http\Controllers\Instuctor\InstructorMaterialController;
+use App\Http\Controllers\Instuctor\InstructorExamController;
+use App\Http\Controllers\Instuctor\InstructorAnnouncementController;
+use App\Http\Controllers\Admin\ExamResultController;
+use App\Http\Controllers\User\StudentExamController;
+use App\Http\Controllers\User\StudentAnnouncementController;
 use App\Http\Controllers\User\StudentController;
 use App\Http\Controllers\User\ActiveDaysCounterController;
 use App\Http\Controllers\User\CertificateReadyController;
@@ -46,6 +52,8 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/detail-kursus/{course:slug}', [detailController::class, 'detail'])->name('detail-kursus');
 Route::get('/daftar-kursus', [listingController::class, 'listing'])->name('daftar-kursus');
 Route::get('/contact', [contactController::class, 'contact'])->name('contact');
+Route::get('/verifikasi-sertifikat', [LandingController::class, 'verifyCertificate'])->name('verify-certificate');
+Route::post('/verifikasi-sertifikat', [LandingController::class, 'checkCertificate'])->name('check-certificate');
 
 // Cart Routes
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -75,7 +83,6 @@ Route::get('/auth/google/refresh-avatar', [GoogleAuthController::class, 'refresh
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::group(['middleware' => 'auth','checkrole:admin'], function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        Route::get('/quick-actions', [AdminController::class, 'quickActions'])->name('quick-actions');
         Route::get('/export-financial', [AdminController::class, 'exportFinancialData'])->name('export-financial');
         Route::get('/export-financial-pdf', [AdminController::class, 'exportFinancialDataPDF'])->name('export-financial-pdf');
         
@@ -141,13 +148,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Profile Routes
         Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
         Route::put('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+        
+        // Exam Results Routes
+        Route::get('/exam-results', [ExamResultController::class, 'index'])->name('exam-results.index');
+        Route::get('/exam-results/course/{courseSlug}', [ExamResultController::class, 'courseDetail'])->name('exam-results.course');
+        Route::get('/exam-results/{submission}', [ExamResultController::class, 'showSubmission'])->name('exam-results.show');
+        
+        // Announcements Routes
+        Route::get('/announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('/announcements/create', [AnnouncementController::class, 'create'])->name('announcements.create');
+        Route::post('/announcements', [AnnouncementController::class, 'store'])->name('announcements.store');
+        Route::get('/announcements/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('announcements.edit');
+        Route::put('/announcements/{announcement}', [AnnouncementController::class, 'update'])->name('announcements.update');
+        Route::delete('/announcements/{announcement}', [AnnouncementController::class, 'destroy'])->name('announcements.destroy');
     });
 });
 
 // Instructor Routes
 Route::prefix('instructor')->name('instructor.')->middleware(['auth', 'checkrole:instructor'])->group(function () {
     Route::get('/dashboard', [InstructorController::class, 'index'])->name('dashboard');
-    Route::get('/quick-actions', [InstructorController::class, 'quickActions'])->name('quick-actions');
     Route::get('/courses', [InstructorController::class, 'courses'])->name('courses');
     Route::get('/messages', [InstructorController::class, 'messages'])->name('messages');
     Route::get('/transactions', [InstructorController::class, 'transactions'])->name('transactions');
@@ -173,6 +192,27 @@ Route::prefix('instructor')->name('instructor.')->middleware(['auth', 'checkrole
     // Sertifikat Routes
     Route::post('/certificates/{enrollmentId}/generate', [InstructorController::class, 'generateCertificate'])->name('certificates.generate');
     
+    // Exam Routes
+    Route::get('/exams', [InstructorExamController::class, 'overview'])->name('exams.overview');
+    Route::get('/courses/{course:slug}/exams', [InstructorExamController::class, 'index'])->name('exams.index');
+    Route::get('/courses/{course:slug}/exams/final/create', [InstructorExamController::class, 'createFinalExam'])->name('exams.create-final');
+    Route::post('/courses/{course:slug}/exams/final', [InstructorExamController::class, 'storeFinalExam'])->name('exams.store-final');
+    Route::get('/courses/{course:slug}/exams/practicum/create', [InstructorExamController::class, 'createPracticum'])->name('exams.create-practicum');
+    Route::post('/courses/{course:slug}/exams/practicum', [InstructorExamController::class, 'storePracticum'])->name('exams.store-practicum');
+    Route::get('/exams/submissions', [InstructorExamController::class, 'submissions'])->name('exams.submissions');
+    Route::get('/exams/submissions/{submission}', [InstructorExamController::class, 'showSubmission'])->name('exams.show-submission');
+    Route::post('/exams/submissions/{submission}/grade', [InstructorExamController::class, 'grade'])->name('exams.grade');
+    Route::post('/exams/{type}/{id}/toggle', [InstructorExamController::class, 'toggleActive'])->name('exams.toggle');
+    Route::delete('/exams/{type}/{id}', [InstructorExamController::class, 'destroy'])->name('exams.destroy');
+    
+    // Announcements Routes
+    Route::get('/announcements', [InstructorAnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/create', [InstructorAnnouncementController::class, 'create'])->name('announcements.create');
+    Route::post('/announcements', [InstructorAnnouncementController::class, 'store'])->name('announcements.store');
+    Route::get('/announcements/{announcement}/edit', [InstructorAnnouncementController::class, 'edit'])->name('announcements.edit');
+    Route::put('/announcements/{announcement}', [InstructorAnnouncementController::class, 'update'])->name('announcements.update');
+    Route::delete('/announcements/{announcement}', [InstructorAnnouncementController::class, 'destroy'])->name('announcements.destroy');
+    
     // Profile Routes
     Route::get('/profile', [InstructorController::class, 'profile'])->name('profile');
     Route::put('/profile', [InstructorController::class, 'updateProfile'])->name('profile.update');
@@ -185,6 +225,7 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'checkrole:stude
     Route::get('/payment', [StudentController::class, 'payment'])->name('payment');
     Route::post('/payment/{payment}/upload-proof', [StudentController::class, 'uploadPaymentProof'])->name('payment.upload-proof');
     Route::get('/certificate', [StudentController::class, 'certificate'])->name('certificate');
+    Route::get('/certificate/{certificate}/download', [StudentController::class, 'downloadCertificate'])->name('certificate.download');
     
     // Chat Routes
     Route::get('/chat', [StudentController::class, 'chat'])->name('chat');
@@ -201,6 +242,17 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'checkrole:stude
     // Profile Routes
     Route::get('/profile', [StudentController::class, 'profile'])->name('profile');
     Route::put('/profile', [StudentController::class, 'updateProfile'])->name('profile.update');
+    
+    // Exam Routes
+    Route::get('/exams', [StudentExamController::class, 'index'])->name('exams.index');
+    Route::get('/exams/results', [StudentExamController::class, 'results'])->name('exams.results');
+    Route::get('/exams/{courseSlug}', [StudentExamController::class, 'show'])->name('exams.show');
+    Route::post('/exams/{courseSlug}/submit-final', [StudentExamController::class, 'submitFinalExam'])->name('exams.submit-final');
+    Route::post('/exams/{courseSlug}/submit-practicum', [StudentExamController::class, 'submitPracticum'])->name('exams.submit-practicum');
+    
+    // Announcements Routes
+    Route::get('/announcements', [StudentAnnouncementController::class, 'index'])->name('announcements.index');
+    Route::get('/announcements/{announcement}', [StudentAnnouncementController::class, 'show'])->name('announcements.show');
     
     // Dashboard Component Routes
     Route::get('/active-days-counter', [ActiveDaysCounterController::class, 'index'])->name('active-days-counter');
